@@ -6,15 +6,18 @@ public class Produtor {
     private static int numeroMensagens = 1000;
 
     public static void main(String[] args) throws NamingException, JMSException {
+
         InitialContext context = new InitialContext();
         ConnectionFactory factory = (ConnectionFactory) context.lookup("ConnectionFactory");
+
         Connection connection = factory.createConnection();
         connection.start();
+        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         System.out.println("Conexão iniciada...");
 
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        Destination fila = (Destination) context.lookup("vendas");
-        MessageProducer producer = session.createProducer(fila);
+        Topic topico = (Topic) context.lookup("numbers");
+
+        MessageProducer producer = session.createProducer(topico);
 
         for(int numero = 0; numero < numeroMensagens; numero++){
             String text = String.valueOf(numero+1);
